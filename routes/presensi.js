@@ -27,7 +27,9 @@ app.get("/", (request, response) => {
             waktu: moment
               .tz(row.waktu, "Asia/Jakarta")
               .format("YYYY-MM-DD HH:mm:ss"),
-            jam_pulang: moment.tz(row.jam_pulang, 'Asia/Jakarta').format('HH:mm:ss')
+            jam_pulang: moment
+              .tz(row.jam_pulang, "Asia/Jakarta")
+              .format("HH:mm:ss"),
           };
         });
         response.send(formattedRows);
@@ -39,15 +41,29 @@ app.get("/", (request, response) => {
   );
 });
 
-
 app.post("/masuk", upload.single("foto"), (request, response) => {
-  const { id_sekolah, waktu, id_siswa, jam_standar_datang, jam_standar_pulang, jam_datang } =
-    request.body;
+  const {
+    id_sekolah,
+    waktu,
+    id_siswa,
+    jam_standar_datang,
+    jam_standar_pulang,
+    jam_datang,
+  } = request.body;
   const foto = request.file ? request.file.path : null;
 
   client.query(
     "INSERT INTO presensi.data_presensi (id_sekolah, waktu, id_siswa, jam_standar_datang, jam_standar_pulang, jam_datang, jam_pulang, foto) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
-    [id_sekolah, waktu, id_siswa, jam_standar_datang, jam_standar_pulang, jam_datang, null, foto],
+    [
+      id_sekolah,
+      waktu,
+      id_siswa,
+      jam_standar_datang,
+      jam_standar_pulang,
+      jam_datang,
+      null,
+      foto,
+    ],
     (err, result) => {
       if (!err) {
         response.send("Presensi Masuk Berhasil");
@@ -62,7 +78,7 @@ app.post("/masuk", upload.single("foto"), (request, response) => {
 app.put("/pulang/:id", (request, response) => {
   const { id } = request.params;
 
-  const currentTime = jam().tz("Asia/Jakarta").format("HH:mm:ss");
+  const currentTime = moment().tz("Asia/Jakarta").format("HH:mm:ss");
 
   client.query(
     "UPDATE presensi.data_presensi SET jam_pulang = $1 WHERE id = $2 RETURNING *",
