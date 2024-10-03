@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
-6
+
 app.get("/", (request, response) => {
   client.query("Select * from kurikulum.jadwal", (err, result) => {
     if (!err) {

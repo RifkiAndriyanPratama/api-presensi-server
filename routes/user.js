@@ -42,7 +42,7 @@ app.post("/register", upload.none(), async (request, response) => {
             userId: result.rows[0].id,
             email: result.rows[0].email,
           },
-          "logintoken", 
+          "logintoken",
           { expiresIn: "24h" }
         );
 
@@ -68,7 +68,7 @@ app.post("/login", upload.none(), async (request, response) => {
 
   // Periksa apakah pengguna ada
   client.query(
-    "SELECT * FROM users.user WHERE email = $1",
+    "SELECT * FROM users.user join users.role r on user.id_role = r.id WHERE email = $1",
     [email],
     async (err, result) => {
       if (err) {
@@ -107,6 +107,7 @@ app.post("/login", upload.none(), async (request, response) => {
         data: {
           userId: user.id,
           email: user.email,
+          role: user.role,
           token: token,
         },
       });
