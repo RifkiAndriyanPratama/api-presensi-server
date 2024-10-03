@@ -48,14 +48,14 @@ app.post("/", upload.none(), async (request, response) => {
     tahun_masuk,
     no_ortu,
     no_hp,
-    email,
     password,
+    id_role,
   } = request.body;
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
   client.query(
-    "INSERT INTO siswa.siswa (id_sekolah, id_kelas, nis, nama, jenis_kelamin, tempat_lahir, tanggal_lahir, alamat, tahun_masuk, no_ortu, no_hp, password) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *",
+    "INSERT INTO siswa.siswa (id_sekolah, id_kelas, nis, nama, jenis_kelamin, tempat_lahir, tanggal_lahir, alamat, tahun_masuk, no_ortu, no_hp, password, id_role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *",
     [
       id_sekolah,
       id_kelas,
@@ -69,6 +69,7 @@ app.post("/", upload.none(), async (request, response) => {
       no_ortu,
       no_hp,
       hashedPassword,
+      id_role,
     ],
     (err, result) => {
       if (!err) {
@@ -95,13 +96,14 @@ app.put("/:id", upload.none(), async (request, response) => {
     no_ortu,
     no_hp,
     password,
+    id_role,
   } = request.body;
   const { id } = request.params;
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
   client.query(
-    "update siswa.siswa set id_sekolah = $1, id_kelas = $2, nis = $3, nama = $4, jenis_kelamin = $5, tempat_lahir = $6, tanggal_lahir = $7, alamat = $8, tahun_masuk = $9, no_ortu = $10, no_hp = $11, password = $12 where id = $13",
+    "update siswa.siswa set id_sekolah = $1, id_kelas = $2, nis = $3, nama = $4, jenis_kelamin = $5, tempat_lahir = $6, tanggal_lahir = $7, alamat = $8, tahun_masuk = $9, no_ortu = $10, no_hp = $11, password = $12, id_role = $13 where id = $14",
     [
       id_sekolah,
       id_kelas,
@@ -115,6 +117,7 @@ app.put("/:id", upload.none(), async (request, response) => {
       no_ortu,
       no_hp,
       hashedPassword,
+      id_role,
       id,
     ],
     (err, result) => {
@@ -139,4 +142,3 @@ app.delete("/:id", (request, response) => {
 });
 
 module.exports = app;
-
