@@ -68,7 +68,7 @@ app.post("/login", upload.none(), async (request, response) => {
 
   // Periksa apakah pengguna ada
   client.query(
-    "SELECT * FROM users.user u join users.role r on u.id_role = u.id WHERE u.email = $1",
+    "SELECT * FROM users.user u join users.role r on u.id_role = r.id WHERE u.email = $1",
     [email],
     async (err, result) => {
       if (err) {
