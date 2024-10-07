@@ -17,7 +17,8 @@ const upload = multer({ storage: storage });
 
 app.get("/", (request, response) => {
   client.query(
-    "select u.id, u.username, u.email, u.password, r.name as role, s.nama_sekolah from users.user u join users.role r on u.id_role = r.id join master.sekolah s on u.id_sekolah = s.id  ",
+    "select u.id, u.username, u.email, u.password, r.name as role, s.nama_sekolah from users.user u join users.role r on u.id_role = r.id join master.sekolah s on u.id_sekolah = s.id where u.id_sekolah = $1",
+    [request.user.id_sekolah],
     (err, result) => {
       if (!err) {
         response.send(result.rows);
