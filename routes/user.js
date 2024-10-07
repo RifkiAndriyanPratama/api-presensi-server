@@ -15,10 +15,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-app.get("/", (request, response) => {
+app.get("/:id_sekolah", (request, response) => {
+  const { id_sekolah } = request.params;
   client.query(
     "select u.id, u.username, u.email, u.password, r.name as role, s.nama_sekolah from users.user u join users.role r on u.id_role = r.id join master.sekolah s on u.id_sekolah = s.id where u.id_sekolah = $1",
-    [request.user.id_sekolah],
+    [id_sekolah],
     (err, result) => {
       if (!err) {
         response.send(result.rows);
@@ -26,7 +27,6 @@ app.get("/", (request, response) => {
     }
   );
 });
-
 app.post("/register", upload.none(), async (request, response) => {
   const { username, email, password, id_sekolah, id_role } = request.body;
 
