@@ -60,6 +60,7 @@ app.post("/", upload.none(), async (request, response) => {
         success: true,
         data: {
           siswaId: siswa.id,
+          sekolahId: siswa.id_sekolah,
           siswaNama: siswa.nama,
           role: siswa.name,
           nis: siswa.nis,
@@ -70,4 +71,3 @@ app.post("/", upload.none(), async (request, response) => {
   );
 });
 module.exports = app;
-
