@@ -38,7 +38,7 @@ app.get("/", (request, response) => {
 app.get("/:id_sekolah", (request, response) => {
   const { id_sekolah } = request.params;
   client.query(
-    "Select s.id, s.id_sekolah, s.id_kelas, s.nis, s.nama, s.jenis_kelamin, s.tempat_lahir, s.tanggal_lahir, s.alamat, s.tahun_masuk, s.no_ortu, s.no_hp, s.password, sc.nama_sekolah, k.nama_kelas, r.name as role from siswa.siswa s join master.sekolah sc on s.id_sekolah = sc.id join kurikulum.kelas k on s.id_kelas = k.id join users.role r on s.id_role = r.id where id_sekolah = $1",
+    "SELECT s.id, s.id_sekolah, s.id_kelas, s.nis, s.nama, s.jenis_kelamin, s.tempat_lahir, s.tanggal_lahir, s.alamat, s.tahun_masuk, s.no_ortu, s.no_hp, s.password, sc.nama_sekolah, k.nama_kelas, r.name as role FROM siswa.siswa s JOIN master.sekolah sc ON s.id_sekolah = sc.id JOIN kurikulum.kelas k ON s.id_kelas = k.id JOIN users.role r ON s.id_role = r.id WHERE s.id_sekolah = $1",
     [id_sekolah],
     (err, result) => {
       if (!err) {
@@ -52,6 +52,7 @@ app.get("/:id_sekolah", (request, response) => {
         response.status(200).send(formattedRows);
       } else {
         console.error(err);
+        response.status(500).send("Internal Server Error");
       }
     }
   );
