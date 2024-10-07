@@ -98,6 +98,7 @@ app.post("/login", upload.none(), async (request, response) => {
         {
           userId: user.id,
           email: user.email,
+          IdSekolah: user.id_sekolah,
         },
         "logintoken",
         { expiresIn: "24h" }
