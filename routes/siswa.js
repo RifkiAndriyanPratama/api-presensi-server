@@ -179,4 +179,19 @@ app.get("/search/:nama_siswa", (request, response) => {
   );
 });
 
+app.get("/search/:id_sekolah/:nama_siswa", (request, response) => {
+  const { id_sekolah, nama_siswa } = request.params;
+  client.query(
+    "select sw.id, sw.nis, sw.nama, sw.jenis_kelamin, sw.tempat_lahir, sw.tanggal_lahir, sw.alamat, sw.tahun_masuk, sw.no_ortu, sw.no_hp, sw.id_sekolah, sw.id_kelas, s.nama_sekolah, k.nama_kelas from siswa.siswa sw join master.sekolah s on sw.id_sekolah = s.id join kurikulum.kelas k on sw.id_kelas = k.id where sw.id_sekolah = $1 and sw.nama ILIKE $2",
+    [id_sekolah, `%${nama_siswa}%`],
+    (err, result) => {
+      if (!err) {
+        response.send(result.rows);
+      } else {
+        response.status(500).send(err.message);
+      }
+    }
+  );
+});
+
 module.exports = app;
