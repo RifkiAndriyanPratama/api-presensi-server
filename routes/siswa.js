@@ -171,7 +171,14 @@ app.get("/search/:nama_siswa", (request, response) => {
     [`%${nama_siswa}%`],
     (err, result) => {
       if (!err) {
-        response.send(result.rows);
+        const formattedRows = result.rows.map((row) => ({
+          ...row,
+          tanggal_lahir: new Date(row.tanggal_lahir)
+            .toISOString()
+            .split("T")[0],
+        }));
+
+        response.status(200).send(formattedRows);
       } else {
         response.status(500).send(err.message);
       }
@@ -186,7 +193,14 @@ app.get("/search/:id_sekolah/:nama_siswa", (request, response) => {
     [id_sekolah, `%${nama_siswa}%`],
     (err, result) => {
       if (!err) {
-        response.send(result.rows);
+        const formattedRows = result.rows.map((row) => ({
+          ...row,
+          tanggal_lahir: new Date(row.tanggal_lahir)
+            .toISOString()
+            .split("T")[0],
+        }));
+
+        response.status(200).send(formattedRows);
       } else {
         response.status(500).send(err.message);
       }
