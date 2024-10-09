@@ -42,7 +42,7 @@ app.get("/", (request, response) => {
 });
 
 app.get("/:id_sekolah", (request, response) => {
-  const {id_sekolah} = request.params
+  const { id_sekolah } = request.params;
   client.query(
     "SELECT p.id, p.id_sekolah, p.waktu, p.id_siswa, p.jam_standar_datang, p.jam_standar_pulang, p.jam_datang, p.jam_pulang, p.foto, s.nama_sekolah, ss.nama as nama_siswa FROM presensi.data_presensi p JOIN master.sekolah s ON p.id_sekolah = s.id JOIN siswa.siswa ss ON p.id_siswa = ss.id WHERE s.id = $1",
     [id_sekolah],
@@ -57,8 +57,6 @@ app.get("/:id_sekolah", (request, response) => {
   );
 });
 
-
-
 app.post("/masuk", upload.single("foto"), (request, response) => {
   const {
     id_sekolah,
@@ -70,11 +68,18 @@ app.post("/masuk", upload.single("foto"), (request, response) => {
   } = request.body;
   const foto = request.file ? request.file.path : null;
 
+  const parsedWaktu = moment.tz(waktu, "Asia/Jakarta");
+  if (!parsedWaktu.isValid()) {
+    return response
+      .status(400)
+      .json({ error: "Format tanggal tidak valid untuk waktu" });
+  }
+
   client.query(
     "INSERT INTO presensi.data_presensi (id_sekolah, waktu, id_siswa, jam_standar_datang, jam_standar_pulang, jam_datang, jam_pulang, foto) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
     [
       id_sekolah,
-      waktu,
+      parsedWaktu.toDate(),
       id_siswa,
       jam_standar_datang,
       jam_standar_pulang,
@@ -115,7 +120,6 @@ app.put("/pulang/:id", (request, response) => {
     }
   );
 });
-
 
 app.get("/search/:presensi", (request, response) => {
   const { presensi } = request.params;
