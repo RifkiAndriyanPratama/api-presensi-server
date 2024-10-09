@@ -75,6 +75,8 @@ app.post("/masuk", upload.single("foto"), (request, response) => {
       .json({ error: "Format tanggal tidak valid untuk waktu" });
   }
 
+  const jam_pulang = null;
+
   client.query(
     "INSERT INTO presensi.data_presensi (id_sekolah, waktu, id_siswa, jam_standar_datang, jam_standar_pulang, jam_datang, jam_pulang, foto) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
     [
@@ -84,7 +86,7 @@ app.post("/masuk", upload.single("foto"), (request, response) => {
       jam_standar_datang,
       jam_standar_pulang,
       jam_datang,
-      null,
+      jam_pulang,
       foto,
     ],
     (err, result) => {
