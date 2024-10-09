@@ -128,7 +128,7 @@ app.get("/search/:presensi", (request, response) => {
 app.get("/search/:id_sekolah/:presensi", (request, response) => {
   const { id_sekolah, presensi } = request.params;
   client.query(
-    "SELECT p.id, p.id_sekolah, p.waktu, p.id_siswa, p.jam_standar_datang, p.jam_standar_pulang, p.jam_datang, p.jam_pulang, p.foto, s.nama_sekolah, ss.nama as nama_siswa FROM presensi.data_presensi p JOIN master.sekolah s ON p.id_sekolah = s.id JOIN siswa.siswa ss ON p.id_siswa = ss.id WHERE s.id = $1 ss.nama ilike $2",
+    "SELECT p.id, p.id_sekolah, p.waktu, p.id_siswa, p.jam_standar_datang, p.jam_standar_pulang, p.jam_datang, p.jam_pulang, p.foto, s.nama_sekolah, ss.nama as nama_siswa FROM presensi.data_presensi p JOIN master.sekolah s ON p.id_sekolah = s.id JOIN siswa.siswa ss ON p.id_siswa = ss.id WHERE s.id = $1 AND ss.nama ilike $2",
     [id_sekolah, `%${presensi}%`],
     (err, result) => {
       if (!err) {
