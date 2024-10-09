@@ -41,6 +41,24 @@ app.get("/", (request, response) => {
   );
 });
 
+app.get("/:id_sekolah", (request, response) => {
+  const {id_sekolah} = request.body
+  client.query(
+    "SELECT p.id, p.id_sekolah, p.waktu, p.id_siswa, p.jam_standar_datang, p.jam_standar_pulang, p.jam_datang, p.jam_pulang, p.foto, s.nama_sekolah, ss.nama as nama_siswa FROM presensi.data_presensi p JOIN master.sekolah s ON p.id_sekolah = s.id JOIN siswa.siswa ss ON p.id_siswa = ss.id WHERE s.id = $1",
+    [id_sekolah],
+    (err, result) => {
+      if (!err) {
+        response.send(result.rows);
+      } else {
+        console.error("Error saat query:", err); // Tambahkan log ini
+        response.status(500).send(err);
+      }
+    }
+  );
+});
+
+
+
 app.post("/masuk", upload.single("foto"), (request, response) => {
   const {
     id_sekolah,
@@ -106,18 +124,7 @@ app.get("/search/:presensi", (request, response) => {
     [`%${presensi}%`],
     (err, result) => {
       if (!err) {
-        const formattedRows = result.rows.map((row) => {
-          return {
-            ...row,
-            waktu: moment
-              .tz(row.waktu, "Asia/Jakarta")
-              .format("YYYY-MM-DD HH:mm:ss"),
-            jam_pulang: moment
-              .tz(row.jam_pulang, "Asia/Jakarta")
-              .format("HH:mm:ss"),
-          };
-        });
-        response.send(formattedRows);
+        response.send(result.rows);
       } else {
         response.status(500).send(err.message);
       }
@@ -132,18 +139,7 @@ app.get("/search/:id_sekolah/:presensi", (request, response) => {
     [id_sekolah, `%${presensi}%`],
     (err, result) => {
       if (!err) {
-        const formattedRows = result.rows.map((row) => {
-          return {
-            ...row,
-            waktu: moment
-              .tz(row.waktu, "Asia/Jakarta")
-              .format("YYYY-MM-DD HH:mm:ss"),
-            jam_pulang: moment
-              .tz(row.jam_pulang, "Asia/Jakarta")
-              .format("HH:mm:ss"),
-          };
-        });
-        response.send(formattedRows);
+        response.send(result.rows);
       } else {
         response.status(500).send(err.message);
       }
