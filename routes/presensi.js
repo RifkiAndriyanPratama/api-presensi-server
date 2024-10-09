@@ -97,14 +97,14 @@ app.post("/masuk", upload.single("foto"), (request, response) => {
   );
 });
 
-app.put("/pulang/:id", (request, response) => {
+app.put("/pulang/:id_siswa", (request, response) => {
   const { id } = request.params;
 
   const currentTime = moment().tz("Asia/Jakarta").format("HH:mm:ss");
 
   client.query(
-    "UPDATE presensi.data_presensi SET jam_pulang = $1 WHERE id = $2 RETURNING *",
-    [currentTime, id],
+    "UPDATE presensi.data_presensi SET jam_pulang = $1 WHERE id_siswa = $2 RETURNING *",
+    [currentTime, id_siswa],
     (err, result) => {
       if (!err) {
         if (result.rowCount > 0) {
