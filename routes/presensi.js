@@ -27,9 +27,6 @@ app.get("/", (request, response) => {
             waktu: moment
               .tz(row.waktu, "Asia/Jakarta")
               .format("YYYY-MM-DD HH:mm:ss"),
-            jam_pulang: moment
-              .tz(row.jam_pulang, "Asia/Jakarta")
-              .format("HH:mm:ss"),
           };
         });
         response.send(formattedRows);
