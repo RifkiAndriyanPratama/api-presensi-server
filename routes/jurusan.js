@@ -14,11 +14,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.get("/", (request, response) => {
-  client.query("select j.id, j.nama_jurusan, j.id_sekolah, s.nama_sekolah from master.jurusan j join master.sekolah s on j.id_sekolah = s.id", (err, result) => {
-    if (!err) {
-      response.send(result.rows);
+  client.query(
+    "select j.id, j.nama_jurusan, j.id_sekolah, s.nama_sekolah from master.jurusan j join master.sekolah s on j.id_sekolah = s.id",
+    (err, result) => {
+      if (!err) {
+        response.send(result.rows);
+      }
     }
-  });
+  );
 });
 
 app.post("/", upload.none(), (request, response) => {
@@ -79,6 +82,21 @@ app.get("/search/:nama_jurusan", (request, response) => {
     (err, result) => {
       if (!err) {
         response.send(result.rows);
+      }
+    }
+  );
+});
+
+app.get("/:id_sekolah/:nama_jurusan", (request, response) => {
+  const { id_sekolah, nama_jurusan } = request.params;
+  client.query(
+    "Select j.id, j.nama_jurusan, s.nama_sekolah from master.jurusan j join master.sekolah s on j.id_sekolah = s.id where j.id_sekolah = $1 and j.nama_jurusan ilike $2",
+    [id_sekolah, `%${nama_jurusan}%`],
+    (err, result) => {
+      if (!err) {
+        response.send(result.rows);
+      } else {
+        response.status(500).send(err.message);
       }
     }
   );

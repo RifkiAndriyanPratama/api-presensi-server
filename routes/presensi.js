@@ -98,7 +98,7 @@ app.post("/masuk", upload.single("foto"), (request, response) => {
 });
 
 app.put("/pulang/:id_siswa", (request, response) => {
-  const { id } = request.params;
+  const { id_siswa } = request.params;
 
   const currentTime = moment().tz("Asia/Jakarta").format("HH:mm:ss");
 
