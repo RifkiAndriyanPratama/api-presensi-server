@@ -90,7 +90,7 @@ app.get("/search/:nama_jurusan", (request, response) => {
 app.get("/search/:id_sekolah/:search", (request, response) => {
   const { id_sekolah, search } = request.params;
   client.query(
-    "Select j.id, j.nama_jurusan, s.nama_sekolah from master.jurusan j join master.sekolah s on j.id_sekolah = s.id where s.id = $1 j.nama_jurusan ilike $2 or s.nama_sekolah ilike $2",
+    "Select j.id, j.nama_jurusan, s.nama_sekolah from master.jurusan j join master.sekolah s on j.id_sekolah = s.id where s.id = $1 AND j.nama_jurusan ilike $2 or s.nama_sekolah ilike $2",
     [id_sekolah, `%${search}%`],
     (err, result) => {
       if (!err) {
