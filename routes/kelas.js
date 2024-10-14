@@ -24,6 +24,19 @@ app.get("/", (request, response) => {
   );
 });
 
+app.get("/:id_sekolah", (request, response) => {
+  const {id_sekolah} = request.params
+  client.query(
+    "Select k.id, k.id_jurusan, k.id_sekolah, s.nama_sekolah, j.nama_jurusan, k.tingkat, k.nama_kelas from kurikulum.kelas k join master.sekolah s on k.id_sekolah = s.id join master.jurusan j on k.id_jurusan = j.id WHERE s.id = $1",
+    [id_sekolah],
+    (err, result) => {
+      if (!err) {
+        response.send(result.rows);
+      }
+    }
+  );
+});
+
 app.post("/", upload.none(), (request, response) => {
   const { id_sekolah, id_jurusan, tingkat, nama_kelas } = request.body;
 

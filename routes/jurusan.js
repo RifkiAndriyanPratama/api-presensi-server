@@ -24,6 +24,21 @@ app.get("/", (request, response) => {
   );
 });
 
+app.get("/:id_sekolah", (request, response) => {
+  const {id_sekolah} = request.params
+  client.query(
+    "select j.id, j.nama_jurusan, j.id_sekolah, s.nama_sekolah from master.jurusan j join master.sekolah s on j.id_sekolah = s.id WHERE s.id = $1",
+    [id_sekolah],
+    (err, result) => {
+      if (!err) {
+        response.send(result.rows);
+      }else{
+        response.send(err)
+      }
+    }
+  );
+});
+
 app.post("/", upload.none(), (request, response) => {
   const { nama_jurusan } = request.body;
   const { id_sekolah } = request.body;
