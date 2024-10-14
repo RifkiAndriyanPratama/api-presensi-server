@@ -26,6 +26,22 @@ app.get("/", (request, response) => {
   );
 });
 
+app.get("/:id_sekolah", (request, response) => {
+  const {id_sekolah} = request.params
+  client.query(
+    "select r.id, r.nama_rombel, r.id_siswa, r.id_tahun_ajaran, r.id_jadwal, t.tahun_ajaran, s.nama_sekolah, k.nama_kelas, j.nama_jadwal, s2.nama, r.id_sekolah, r.id_kelas from kurikulum.rombel r join master.tahun_ajaran t on r.id_tahun_ajaran = t.id join master.sekolah s on r.id_sekolah = s.id join kurikulum.kelas k on r.id_kelas = k.id join siswa.siswa s2 on r.id_siswa = s2.id join kurikulum.jadwal j on r.id_jadwal = j.id WHERE s.id = $1",
+    [id_sekolah],
+    (err, result) => {
+      if (!err) {
+        response.send(result.rows);
+      } else {
+        response.send(err.message);
+      }
+    }
+  );
+});
+
+
 app.post("/", upload.none(), (request, response) => {
   const {
     id_kelas,
@@ -110,5 +126,21 @@ app.get("/search/:nama_rombel", (request, response) => {
     }
   );
 });
+
+app.get("/search/:id_sekolah/:nama_rombel", (request, response) => {
+  const { id_sekolah, nama_rombel } = request.params;
+  client.query(
+    "Select r.id, r.id_kelas, r.id_sekolah, r.id_tahun_ajaran, r.id_jadwal, r.id_siswa, t.tahun_ajaran, s.nama_sekolah, r.nama_rombel, k.nama_kelas, j.nama_jadwal, ss.nama  from kurikulum.rombel r join master.sekolah s on r.id_sekolah = s.id join master.tahun_ajaran t on r.id_tahun_ajaran = t.id join kurikulum.kelas k on r.id_kelas = k.id join kurikulum.jadwal j on r.id_jadwal = j.id join siswa.siswa ss on r.id_siswa = ss.id where s.id = $1 AND nama_rombel ilike $2 or nama_sekolah ilike $2",
+    [id_sekolah, `%${nama_rombel}%`],
+    (err, result) => {
+      if (!err) {
+        response.send(result.rows);
+      } else {
+        response.send(err.message);
+      }
+    }
+  );
+});
+
 
 module.exports = app;
